@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -37,6 +38,7 @@ class ClientController extends Controller
         $client = Client::create([
             'fname' => $request->fname,
             'lname' => $request->lname,
+            'agence_id' => Auth::user()->id,
             'phone' => $request->phone,
             'adresse' => $request->adresse,
             'cin' => $request->cin,

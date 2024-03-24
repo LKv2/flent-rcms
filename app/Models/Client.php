@@ -10,6 +10,7 @@ class Client extends Model
     use HasFactory;
     protected $fillable = [
         'fname',
+        'agence_id',
         'lname',
         'phone',
         'adresse',
@@ -34,6 +35,10 @@ class Client extends Model
     {
         $user=User::find($this->user);
         return $user;
+    }
+    public function agencie()
+    {
+        return $this->belongsTo(User::class, 'agence_id');
     }
 }
 

@@ -33,6 +33,8 @@ return new class extends Migration
             $table->date('PassValide_date')->nullable();
             $table->unsignedBigInteger('user')->unique()->nullable();
             $table->foreign('user')->references('id')->on('users');
+            $table->unsignedBigInteger('agence_id')->unique()->nullable();
+            $table->foreign('agence_id')->references('id')->on('users');
             $table->timestamps();
             
         });
