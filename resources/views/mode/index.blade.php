@@ -67,7 +67,7 @@
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-4 py-3">Mode</th>
-                                <th scope="col" class="px-4 py-3">Ammount</th>
+                                <th scope="col" class="px-4 py-3">Year</th>
                                 <th scope="col" class="px-4 py-3">
                                     <span class="sr-only">Actions</span>
                                 </th>
@@ -80,7 +80,7 @@
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $mode->name }}
                                     </th>
-                                    <td class="px-4 py-3">{{ strpos($mode->name, 'Office') !== 0 ? $mode->amount : '-' }}
+                                    <td class="px-4 py-3">{{ $mode->year }}
                                     </td>
                                     <td class="px-4 py-3 flex items-center justify-end">
                                         <button id="apple-imac-27-dropdown-button"

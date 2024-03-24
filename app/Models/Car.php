@@ -58,6 +58,10 @@ class Car extends Model
     {
         return $this->belongsTo(Mode::class, 'model');
     }
+    public function marque()
+    {
+        return Marque::find($this->mode->marque);
+    }
     public function agencie()
     {
         return $this->belongsTo(User::class, 'agence_id');

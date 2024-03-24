@@ -9,7 +9,7 @@ class Mode extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'marque',
+        'marque_id',
         'name',
         'year',
         'front_image',
@@ -18,8 +18,8 @@ class Mode extends Model
         'exterior_image',
     ];
 
-    public function CarBrand()
+    public function marque()
     {
-        return $this->belongsTo(Marque::class, 'marque');
+        return $this->belongsTo(Marque::class, 'marque_id');
     }
 }
