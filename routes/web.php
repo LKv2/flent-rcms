@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\MarqueController;
 use App\Http\Controllers\carController;
+use App\Http\Controllers\clientController;
 use App\Http\Controllers\ModeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
@@ -79,5 +80,15 @@ Route::get('/modes/{mode}/edit', [ModeController::class, 'edit'])->name('modes.e
 Route::post('/modes/{mode}', [ModeController::class, 'update'])->name('modes.update');
 Route::get('/modes/{mode}', [ModeController::class, 'destroy'])->name('modes.destroy');
 Route::get('/getModels/{id}', [ModeController::class, 'getModelOfBrand']);
+
+Route::get('/clients', [clientController::class, 'index'])->name('clients.index');
+Route::get('/clients/create', [clientController::class, 'create'])->name('clients.create');
+Route::post('/clients', [clientController::class, 'store'])->name('clients.store');
+Route::get('/clients/{client}/edit', [clientController::class, 'edit'])->name('clients.edit');
+Route::put('/clients/{client}', [clientController::class, 'update'])->name('clients.update');
+Route::get('/clients/{client}/delete', [clientController::class, 'destroy'])->name('clients.destroy');
+Route::get('/clients/{client}', [clientController::class, 'show'])->name('clients.show');
+Route::get('/clients/document/{id}/{type}', [ClientController::class, 'document'])->name('clients.document');
+
 
 require __DIR__ . '/auth.php';
