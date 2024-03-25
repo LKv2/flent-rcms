@@ -3,9 +3,14 @@
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\MarqueController;
 use App\Http\Controllers\carController;
-use App\Http\Controllers\clientController;
-use App\Http\Controllers\ModeController;
+use App\Http\Controllers\bookingController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\locationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ModeController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProlongationController;
+use App\Models\Prolongation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -29,15 +34,15 @@ Route::middleware(['auth', 'verified', 'activation'])->group(function () {
         switch (Auth::user()->role) {
             case 'admin':
                 return view('admin.dashboard');
-            case 'client':
-                return view('client.dashboard');
+            case 'booking':
+                return view('booking.dashboard');
             case 'commercial':
                 return view('commercial.dashboard');
         }
     })->name('dashboard');
     Route::middleware('role:admin')->group(function () {
     });
-    Route::middleware('role:client')->group(function () {
+    Route::middleware('role:booking')->group(function () {
     });
     Route::middleware('role:commercial')->group(function () {
     });
@@ -72,6 +77,15 @@ Route::get('/cars/{car}', [carController::class, 'show'])->name('cars.show');
 Route::get('/cars/{car}/edit', [carController::class, 'edit'])->name('cars.edit');
 Route::post('/cars/{car}', [carController::class, 'update'])->name('cars.update');
 Route::get('/cars/{car}/delete', [carController::class, 'destroy'])->name('cars.destroy');
+Route::match(['get', 'post'], '/get-available-cars', [CarController::class, 'updateAvailableCars'])->name('update.available.cars');
+
+Route::get('/locations', [locationController::class, 'index'])->name('locations.index');
+Route::get('/locations/create', [locationController::class, 'create'])->name('locations.create');
+Route::post('/locations', [locationController::class, 'store'])->name('locations.store');
+Route::get('/locations/{location}/edit', [locationController::class, 'edit'])->name('locations.edit');
+Route::post('/locations/{location}', [locationController::class, 'update'])->name('locations.update');
+Route::get('/locations/{location}', [locationController::class, 'destroy'])->name('locations.destroy');
+Route::get('/getlocationls/{id}', [locationController::class, 'getlocationlOfBrand']);
 
 Route::get('/modes', [ModeController::class, 'index'])->name('modes.index');
 Route::get('/modes/create', [ModeController::class, 'create'])->name('modes.create');
@@ -81,7 +95,7 @@ Route::post('/modes/{mode}', [ModeController::class, 'update'])->name('modes.upd
 Route::get('/modes/{mode}', [ModeController::class, 'destroy'])->name('modes.destroy');
 Route::get('/getModels/{id}', [ModeController::class, 'getModelOfBrand']);
 
-Route::get('/clients', [clientController::class, 'index'])->name('clients.index');
+Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
 Route::get('/clients/create', [clientController::class, 'create'])->name('clients.create');
 Route::post('/clients', [clientController::class, 'store'])->name('clients.store');
 Route::get('/clients/{client}/edit', [clientController::class, 'edit'])->name('clients.edit');
@@ -89,6 +103,21 @@ Route::put('/clients/{client}', [clientController::class, 'update'])->name('clie
 Route::get('/clients/{client}/delete', [clientController::class, 'destroy'])->name('clients.destroy');
 Route::get('/clients/{client}', [clientController::class, 'show'])->name('clients.show');
 Route::get('/clients/document/{id}/{type}', [ClientController::class, 'document'])->name('clients.document');
+
+Route::get('/bookings', [bookingController::class, 'index'])->name('bookings.index');
+Route::get('/bookings/create', [bookingController::class, 'create'])->name('bookings.create');
+Route::post('/bookings', [bookingController::class, 'store'])->name('bookings.store');
+Route::get('/bookings/{booking}', [bookingController::class, 'show'])->name('bookings.show');
+Route::get('/bookings/{booking}/edit', [bookingController::class, 'edit'])->name('bookings.edit');
+Route::put('/bookings/{booking}', [bookingController::class, 'update'])->name('bookings.update');
+Route::put('/bookings/{booking}/cancel', [bookingController::class, 'cancel'])->name('bookings.cancel');
+Route::put('/bookings/{booking}/confirm', [bookingController::class, 'confirm'])->name('bookings.confirm');
+Route::get('/bookings/{booking}/payement', [PaymentController::class, 'index'])->name('bookings.payement');
+Route::post('/bookings/{booking}/payement', [PaymentController::class, 'store'])->name('bookings.payment.store');
+Route::get('/bookings/{booking}/prolongation', [ProlongationController::class, 'index'])->name('bookings.prolongation');
+Route::post('/bookings/{booking}/prolongation', [ProlongationController::class, 'store'])->name('bookings.prolongation.store');
+Route::get('/bookings/{booking}/invoice', [bookingController::class, 'invoice'])->name('bookings.invoice');
+Route::get('/bookings/{booking}/contract', [bookingController::class, 'contract'])->name('bookings.contract');
 
 
 require __DIR__ . '/auth.php';

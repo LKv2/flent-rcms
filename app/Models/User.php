@@ -45,4 +45,16 @@ class User extends Authenticatable
         'activation' => 'boolean',
 
     ];
+    public function offices()
+    {
+        return $this->hasMany(Office::class,'agence_id');
+    }
+    public function locations()
+    {
+        return $this->hasMany(Location::class,'agence_id');
+    }
+    public function clients()
+    {
+        return $this->hasMany(Client::class,'agence_id');
+    }
 }
