@@ -170,7 +170,11 @@ class CarController extends Controller
 
         return redirect()->route('cars.index')->with('success', 'Car added successfully');
     }
-
+    public function document($id, $type)
+    {
+        $car = Car::findOrFail($id);
+        return view('document', compact('car', 'type'));
+    }
 
     public function edit($id)
     {

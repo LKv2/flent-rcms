@@ -7,10 +7,11 @@ use App\Http\Controllers\bookingController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\locationController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ModeController;
+use App\Http\Controllers\chargeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProlongationController;
-use App\Models\Prolongation;
+use App\chargels\Prolongation;
+use App\Http\Controllers\ModeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -94,6 +95,10 @@ Route::get('/modes/{mode}/edit', [ModeController::class, 'edit'])->name('modes.e
 Route::post('/modes/{mode}', [ModeController::class, 'update'])->name('modes.update');
 Route::get('/modes/{mode}', [ModeController::class, 'destroy'])->name('modes.destroy');
 Route::get('/getModels/{id}', [ModeController::class, 'getModelOfBrand']);
+
+Route::get('/charges', [chargeController::class, 'index'])->name('charges.index');
+Route::post('/charges', [chargeController::class, 'store'])->name('charges.store');
+Route::get('/charges/{charge}', [chargeController::class, 'destroy'])->name('charges.destroy');
 
 Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
 Route::get('/clients/create', [clientController::class, 'create'])->name('clients.create');

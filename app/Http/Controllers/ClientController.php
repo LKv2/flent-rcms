@@ -128,7 +128,7 @@ class ClientController extends Controller
     public function document($id, $type)
     {
         $client = Client::findOrFail($id);
-        return view('client.document', compact('client', 'type'));
+        return view('document', compact('client', 'type'));
     }
     public function destroy($id)
     {

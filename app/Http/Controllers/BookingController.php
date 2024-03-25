@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Car;
+use App\Models\Charge;
 use App\Models\Client;
 use App\Models\Location;
 use DateTime;
@@ -19,10 +20,10 @@ class BookingController extends Controller
     }
     public function create()
     {
-        $clients=Auth::user()->clients;
-        $cars=Auth::user()->cars;
-        $locations=Auth::user()->locations;
-        return view('booking.create',compact('cars','clients','locations'));
+        $clients = Auth::user()->clients;
+        $cars = Auth::user()->cars;
+        $locations = Auth::user()->locations;
+        return view('booking.create', compact('cars', 'clients', 'locations'));
     }
     public function store(Request $request)
     {
@@ -48,7 +49,6 @@ class BookingController extends Controller
             $booking->car->km = $request->km_depart;
             $booking->car->etat = 'Sortie';
             $booking->reservation_status = 'en cours';
-           
         } else {
             $booking->km_depart = 0;
             $booking->reservation_status = 'confirmée';
@@ -57,6 +57,87 @@ class BookingController extends Controller
         $booking->prix_day = $booking->car->price();
         $booking->amount = $numberOfDays * $booking->car->price();
         $booking->financial_status = 'non payé';
+        $booking->car->save();
+        $booking->save();
+        return redirect()->route('booking');
+    }
+    public function confirm($id)
+    {
+        $booking = Booking::find($id);
+        $booking->reservation_status = 'confirmée';
+        $subject = 'Booking Confirmation';
+        $content = "
+            <p>Dear {$booking->client->fname},</p>
+                <p>We are pleased to confirm your car booking with us. Here are the booking details:</p>
+                <ul>
+                    <li><strong>Booking Reference:</strong> {$booking->id}</li>
+                    <li><strong>Car:</strong> {$booking->car->modelBrand->CarBrand->name_brand} {$booking->car->modelBrand->name}</li>
+                    <li><strong>Pickup Date and Time:</strong> {$booking->pickup_date}</li>
+                    <li><strong>Return Date and Time:</strong> {$booking->dropoff_date}</li>
+                    <li><strong>Booking Total Amount:</strong> {$booking->amount} USD</li>
+                </ul>
+                <p>Your reservation is confirmed, and we look forward to serving you. If you have any questions or need further assistance, please do not hesitate to contact us. Safe travels!</p>
+                <p>Best regards,<br> Tyr Tours Team</p>
+            ";
+        //Mail::to($booking->client->user()->email)->send(new GenericEmail($subject, $content));
+
+        $booking->save();
+        return redirect()->route('booking');
+    }
+    public function cancel($id, Request $request)
+    {
+        $booking = Booking::find($id);
+        $booking->reservation_status = 'annulée';
+        $subject = 'Booking Cancellation Confirmation';
+        $content = "
+
+            <p>Dear {$booking->client->fname},</p>
+            <p>We regret to inform you that your booking has been canceled. Here are the details:</p>
+            <ul>
+                <li><strong>Booking Reference:</strong> {$booking->id}</li>
+                <li><strong>Car:</strong> {$booking->car->modelBrand->CarBrand->name_brand} {$booking->car->modelBrand->name}</li>
+            </ul>
+            <p>Your booking has been canceled, and any related charges have been processed accordingly. If you require further assistance or have questions regarding the cancellation, please contact our customer support team. We apologize for any inconvenience.</p>
+            <p>Best regards,<br> Tyr Tours Team</p>
+
+        ";
+        if ($request) {
+            if ($request->cout > 0) {
+                $charge = new Charge();
+                $charge->type = $request->type;
+                $charge->description = $id;
+                $charge->agence_id = Auth::user()->id;
+                $charge->amount = $request->cout;
+                $charge->date = $request->date;
+                $charge->save();
+            }
+        }
+
+        //Mail::to($booking->client->user()->email)->send(new GenericEmail($subject, $content));
+
+        $booking->save();
+        return redirect()->route('booking');
+    }
+    public function open($id, Request $request)
+    {
+        $booking = Booking::find($id);
+        $booking->km_depart = $request->kml_depart;
+        $booking->reservation_status = 'en cours';
+        $booking->discount = $request->disaccount;
+        $booking->carburant_depart = $request->carburant_depart;
+        $booking->car->etat = 'Sortie';
+        $booking->car->save();
+        $booking->save();
+        return redirect()->route('booking');
+    }
+    public function close($id, Request $request)
+    {
+        $booking = Booking::find($id);
+        $booking->km_retour = $request->km_retour;
+        $booking->reservation_status = 'terminée';
+        $booking->surcharge = $request->surcharge;
+        $booking->carburant_retour = $request->carburant_retour;
+        $booking->car->etat = 'En Parc';
         $booking->car->save();
         $booking->save();
         return redirect()->route('booking');
