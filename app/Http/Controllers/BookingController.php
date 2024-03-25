@@ -59,7 +59,22 @@ class BookingController extends Controller
         $booking->financial_status = 'non payé';
         $booking->car->save();
         $booking->save();
-        return redirect()->route('booking');
+        return redirect()->route('booking.index');
+    }
+    public function show($id)
+    {
+        $booking = Booking::find($id);
+        return view('booking.show', compact('booking'));
+    }
+    public function contract($id)
+    {
+        $booking = Booking::find($id);
+        return view('booking.contract', compact('booking'));
+    }
+    public function invoice($id)
+    {
+        $booking = Booking::find($id);
+        return view('booking.invoice', compact('booking'));
     }
     public function confirm($id)
     {
@@ -71,7 +86,7 @@ class BookingController extends Controller
                 <p>We are pleased to confirm your car booking with us. Here are the booking details:</p>
                 <ul>
                     <li><strong>Booking Reference:</strong> {$booking->id}</li>
-                    <li><strong>Car:</strong> {$booking->car->modelBrand->CarBrand->name_brand} {$booking->car->modelBrand->name}</li>
+                    <li><strong>Car:</strong> {$booking->car->marque()->name_brand} {$booking->car->modelBrand->name}</li>
                     <li><strong>Pickup Date and Time:</strong> {$booking->pickup_date}</li>
                     <li><strong>Return Date and Time:</strong> {$booking->dropoff_date}</li>
                     <li><strong>Booking Total Amount:</strong> {$booking->amount} USD</li>
@@ -82,7 +97,7 @@ class BookingController extends Controller
         //Mail::to($booking->client->user()->email)->send(new GenericEmail($subject, $content));
 
         $booking->save();
-        return redirect()->route('booking');
+        return redirect()->route('booking.index');
     }
     public function cancel($id, Request $request)
     {
@@ -95,7 +110,7 @@ class BookingController extends Controller
             <p>We regret to inform you that your booking has been canceled. Here are the details:</p>
             <ul>
                 <li><strong>Booking Reference:</strong> {$booking->id}</li>
-                <li><strong>Car:</strong> {$booking->car->modelBrand->CarBrand->name_brand} {$booking->car->modelBrand->name}</li>
+                <li><strong>Car:</strong> {$booking->car->marque()->name} {$booking->car->mode->name}</li>
             </ul>
             <p>Your booking has been canceled, and any related charges have been processed accordingly. If you require further assistance or have questions regarding the cancellation, please contact our customer support team. We apologize for any inconvenience.</p>
             <p>Best regards,<br> Tyr Tours Team</p>
@@ -116,7 +131,7 @@ class BookingController extends Controller
         //Mail::to($booking->client->user()->email)->send(new GenericEmail($subject, $content));
 
         $booking->save();
-        return redirect()->route('booking');
+        return redirect()->route('booking.index');
     }
     public function open($id, Request $request)
     {
@@ -128,7 +143,7 @@ class BookingController extends Controller
         $booking->car->etat = 'Sortie';
         $booking->car->save();
         $booking->save();
-        return redirect()->route('booking');
+        return redirect()->route('booking.index');
     }
     public function close($id, Request $request)
     {
@@ -140,6 +155,6 @@ class BookingController extends Controller
         $booking->car->etat = 'En Parc';
         $booking->car->save();
         $booking->save();
-        return redirect()->route('booking');
+        return redirect()->route('booking.index');
     }
 }

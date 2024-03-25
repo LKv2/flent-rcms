@@ -115,8 +115,8 @@ Route::post('/bookings', [bookingController::class, 'store'])->name('bookings.st
 Route::get('/bookings/{booking}', [bookingController::class, 'show'])->name('bookings.show');
 Route::get('/bookings/{booking}/edit', [bookingController::class, 'edit'])->name('bookings.edit');
 Route::put('/bookings/{booking}', [bookingController::class, 'update'])->name('bookings.update');
-Route::put('/bookings/{booking}/cancel', [bookingController::class, 'cancel'])->name('bookings.cancel');
-Route::put('/bookings/{booking}/confirm', [bookingController::class, 'confirm'])->name('bookings.confirm');
+Route::post('/bookings/{booking}/cancel', [bookingController::class, 'cancel'])->name('bookings.cancel');
+Route::post('/bookings/{booking}/confirm', [bookingController::class, 'confirm'])->name('bookings.confirm');
 Route::get('/bookings/{booking}/payement', [PaymentController::class, 'index'])->name('bookings.payement');
 Route::post('/bookings/{booking}/payement', [PaymentController::class, 'store'])->name('bookings.payment.store');
 Route::get('/bookings/{booking}/prolongation', [ProlongationController::class, 'index'])->name('bookings.prolongation');

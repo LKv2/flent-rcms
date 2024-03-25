@@ -42,20 +42,20 @@
                     {{ __('Add') }} {{ __('location') }}
                 </a>
                 <div class="flex items-center space-x-3 w-full md:w-auto">
-                    <select name="etat" id="etat"
+                    <select name="status" id="status"
                         class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-[#3CB371] focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         <option value="all">{{ __('All') }}</option>
                         <option value="payé">{{ __('paye') }}</option>
                         <option value="non payé">{{ __('unpaid') }}</option>
 
                     </select>
-                    <select name="status" id="status"
+                    <select name="etat" id="etat"
                         class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-[#3CB371] focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         <option value="all">{{ __('All') }}</option>
                         <option value="en cours">{{ __('In-Progress') }}</option>
                         <option value="terminée">{{ __('Done') }}</option>
                         <option value="confirmée">{{ __('confirmed') }}</option>
-                        <option value="non confirmée">{{ __('cancel') }}</option>
+                        <option value="annulée">{{ __('cancel') }}</option>
 
                     </select>
                 </div>
@@ -68,7 +68,6 @@
                         <th scope="col" class="px-4 py-3">{{ __('booking') }}</th>
                         <th scope="col" class="px-4 py-3">{{ __('Depart') }}</th>
                         <th scope="col" class="px-4 py-3">{{ __('Return') }}</th>
-                        <th scope="col" class="px-4 py-3">{{ __('etat') }}</th>
                         <th scope="col" class="px-4 py-3">{{ __('etat') }}</th>
                         <th scope="col" class="px-4 py-3">{{ __('status') }}</th>
                         <th scope="col" class="px-4 py-3">{{ __('client') }}</th>
@@ -121,7 +120,7 @@
                                                     class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Contrat</a>
                                             </li>
                                         @endif
-                                        @if ($booking->reservation_status == 'non confirmée')
+                                        @if ($booking->reservation_status === 'non confirmée')
                                             <li>
                                                 <a href="{{ route('bookings.cancel', $booking->id) }}"
                                                     class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Annule</a>
@@ -145,15 +144,7 @@
                                                         class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Annule</a>
                                                 </li>
                                             @endif
-                                        @else
-                                            <li>
-                                                <a href="{{ route('bookings.cancel', $booking->id) }}"
-                                                    class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Annule</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ route('bookings.confirm', $booking->id) }}"
-                                                    class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Confirme</a>
-                                            </li>
+                                        
                                         @endif
                                         @if ($booking->reservation_status == 'en cours' || $booking->reservation_status == 'confirmée')
                                             @if ($booking->reste() !== 0.0)
@@ -181,53 +172,53 @@
          $bookings->links()
     </nav>-->
     </div>
-    <!-- Add a script at the end of your HTML body or in a separate JavaScript file -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const searchInput2 = document.getElementById("simple-search");
-            const startDateInput = document.getElementById("start");
-            const endDateInput = document.getElementById("end");
-            const etatSelect = document.getElementById("etat");
-            const statusSelect = document.getElementById("status");
-            const tableRows = document.querySelectorAll("#clientTable tbody tr");
+        const searchInput2 = document.getElementById("simple-search");
+        const startDateInput = document.getElementById("start");
+        const endDateInput = document.getElementById("end");
+        const etatSelect = document.getElementById("etat");
+        const statusSelect = document.getElementById("status");
+        const tableRows = document.querySelectorAll("#clientTable tbody tr");
 
-            function filterTable() {
-                const searchTerm = searchInput2.value.toLowerCase();
-                const startDate = new Date(startDateInput.value);
-                const endDate = new Date(endDateInput.value);
-                const etatFilter = etatSelect.value.toLowerCase();
-                const statusFilter = statusSelect.value.toLowerCase();
+        function filterTable() {
+            const searchTerm = searchInput2.value.toLowerCase();
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            const etatFilter = etatSelect.value.toLowerCase();
+            const statusFilter = statusSelect.value.toLowerCase();
 
-                tableRows.forEach(function(row) {
-                    const id = row.querySelector("td:nth-child(1)").innerText.toLowerCase();
-                    const client = row.querySelector("td:nth-child(6)").innerText.toLowerCase();
-                    const date = new Date(row.querySelector("td:nth-child(2)").innerText);
-                    const etat = row.querySelector("td:nth-child(5)").innerText.toLowerCase();
-                    const status = row.querySelector("td:nth-child(4)").innerText.toLowerCase();
-                    console.log(id);
-                    console.log(searchTerm);
-                    const isIdMatch = id.includes(searchTerm);
-                    console.log(isIdMatch);
-                    const isClientMatch = client.includes(searchTerm);
-                    const isDateMatch = (isNaN(startDate) || date >= startDate) && (isNaN(endDate) ||
-                        date <= endDate);
-                    const isEtatMatch = etatFilter === "all" || etat.includes(etatFilter);
-                    const isStatusMatch = statusFilter === "all" || status.includes(statusFilter);
+            tableRows.forEach(function(row) {
+                const booking = row.querySelector("td:nth-child(1)").innerText.toLowerCase();
+                const depart = row.querySelector("td:nth-child(2)").innerText.toLowerCase();
+                const returnDate = row.querySelector("td:nth-child(3)").innerText.toLowerCase();
+                const etat = row.querySelector("td:nth-child(4)").innerText.toLowerCase();
+                const status = row.querySelector("td:nth-child(5)").innerText.toLowerCase();
+                const client = row.querySelector("td:nth-child(6)").innerText.toLowerCase();
+                const amount = row.querySelector("td:nth-child(7)").innerText.toLowerCase();
+                const isBookingMatch = booking.includes(searchTerm);
+                const isDepartMatch = depart.includes(searchTerm);
+                const isReturnMatch = returnDate.includes(searchTerm);
+                const isEtatMatch = etatFilter === "all" || etat === etatFilter;
+                const isStatusMatch = statusFilter === "all" || status === statusFilter;
+                const isClientMatch = client.includes(searchTerm);
+                const isAmountMatch = amount.includes(searchTerm);
+                const date = new Date(depart);
+                const isDateMatch = (isNaN(startDate) || date >= startDate) && (isNaN(endDate) || date <= endDate);
 
-                    if (isIdMatch && isClientMatch && isDateMatch && isEtatMatch && isStatusMatch) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            }
+                if (isBookingMatch && isDepartMatch && isReturnMatch && isDateMatch && isEtatMatch &&
+                    isStatusMatch && isClientMatch && isAmountMatch) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
 
-            searchInput2.addEventListener("input", filterTable);
-            startDateInput.addEventListener("change", filterTable);
-            endDateInput.addEventListener("change", filterTable);
-            etatSelect.addEventListener("change", filterTable);
-            statusSelect.addEventListener("change", filterTable);
-        });
+        searchInput2.addEventListener("input", filterTable);
+        startDateInput.addEventListener("change", filterTable);
+        endDateInput.addEventListener("change", filterTable);
+        etatSelect.addEventListener("change", filterTable);
+        statusSelect.addEventListener("change", filterTable);
     </script>
 
 
