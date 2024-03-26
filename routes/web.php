@@ -12,6 +12,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProlongationController;
 use App\chargels\Prolongation;
 use App\Http\Controllers\ModeController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -123,6 +124,13 @@ Route::get('/bookings/{booking}/prolongation', [ProlongationController::class, '
 Route::post('/bookings/{booking}/prolongation', [ProlongationController::class, 'store'])->name('bookings.prolongation.store');
 Route::get('/bookings/{booking}/invoice', [bookingController::class, 'invoice'])->name('bookings.invoice');
 Route::get('/bookings/{booking}/contract', [bookingController::class, 'contract'])->name('bookings.contract');
+
+Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+Route::post('/task/add', [TaskController::class, 'store'])->name('tasks.store');
+Route::match(['POST', 'GET'], '/task/{id}/done', [TaskController::class, 'done'])->name('tasks.done');
+Route::match(['POST', 'GET'], '/tasks/{date}', [TaskController::class, 'getTasksByDate'])->name('tasks.by.date');
+Route::match(['POST', 'GET'], '/update-task-status/{id}', [TaskController::class, 'updateStatus'])->name('task.updateStatus');
+
 
 
 require __DIR__ . '/auth.php';

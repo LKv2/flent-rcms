@@ -7,6 +7,7 @@ use App\Models\Car;
 use App\Models\Charge;
 use App\Models\Client;
 use App\Models\Location;
+use App\Models\Task;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,17 +50,43 @@ class BookingController extends Controller
             $booking->car->km = $request->km_depart;
             $booking->car->etat = 'Sortie';
             $booking->reservation_status = 'en cours';
+            $taskopen = new Task();
+            $taskopen->user_id = $booking->id;
+            $taskopen->title = "Booking ID: {$booking->id} Checkin";
+            $taskopen->description = "Car {$immatriculation} will be booked in Booking {$booking->id}";
+            $taskopen->date = $booking->pickup_date;
+            $taskopen->type = "Booking Task";
+            $taskopen->status = 'Done';
+            $this->open($booking->id,$request);
         } else {
             $booking->km_depart = 0;
             $booking->reservation_status = 'confirmée';
+            $taskopen = new Task();
+            $taskopen->user_id = $booking->id;
+            $taskopen->title = "Booking ID: {$booking->id} Checkin";
+            $taskopen->description = "Car {$immatriculation} will be booked in Booking {$booking->id}";
+            $taskopen->date = $booking->pickup_date;
+            $taskopen->type = "Booking Task";
+            $taskopen->status = 'To-Do';
         }
         $booking->km_retour = 0;
         $booking->prix_day = $booking->car->price();
         $booking->amount = $numberOfDays * $booking->car->price();
         $booking->financial_status = 'non payé';
+        $taskclose = new Task();
+        $taskclose->title = "Booking ID: {$booking->id} Checkout";
+        $taskclose->agence_id = Auth::user()->id;
+        $taskopen->agence_id = Auth::user()->id;
+        $taskclose->user_id = $booking->id;
+        $taskclose->description = "Car {$immatriculation} will be available in Booking {$booking->id}";
+        $taskclose->date = $booking->dropoff_date;
+        $taskclose->type = "Booking Task";
+        $taskclose->status = 'To-Do';
         $booking->car->save();
+        $taskclose->save();
+        $taskopen->save();
         $booking->save();
-        return redirect()->route('booking.index');
+        return redirect()->route('booking');
     }
     public function show($id)
     {

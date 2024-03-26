@@ -65,4 +65,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Charge::class,'agence_id');
     }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class,'agence_id');
+    }
 }
