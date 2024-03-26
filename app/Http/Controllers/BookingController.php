@@ -184,4 +184,9 @@ class BookingController extends Controller
         $booking->save();
         return redirect()->route('booking.index');
     }
+    public function process($id)
+    {
+        $booking = Booking::find($id);
+        return view('payement.process', compact('booking'));
+    }
 }

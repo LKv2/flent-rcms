@@ -28,7 +28,7 @@
             @endif
 
             <!-- Page Content -->
-            <main>
+            <main class="h-full">
                 {{ $slot }}
             </main>
         </div>
