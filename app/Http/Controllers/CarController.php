@@ -89,7 +89,7 @@ class CarController extends Controller
 
         $car = new Car();
         $car->model = $request->model;
-        $car->agence_id = Auth::user()->id;
+        $car->agence_id = $this->userAuth()->id;
         $car->color = $request->color;
         $car->categorie = $request->categorie;
         $car->carburant = $request->carburant;
@@ -201,7 +201,7 @@ class CarController extends Controller
         try {
             // Find the car by its ID or throw an exception if not found
             $car = Car::findOrFail($id);
-            $car->agence_id = Auth::user()->id;
+            $car->agence_id = $this->userAuth()->id;
             $car->model = $request->model;
             $car->categorie = $request->categorie;
             $car->color = $request->color;

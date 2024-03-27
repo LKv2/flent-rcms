@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('agence_id')->nullable();
             $table->unsignedBigInteger('car')->nullable();
             $table->timestamps();
-            $table->foreign('agence_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('agence_id')->references('id')->on('agencies')->onDelete('cascade');
             $table->foreign('car')->references('id')->on('cars')->onDelete('cascade');
         });
     }

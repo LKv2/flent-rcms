@@ -21,9 +21,9 @@ class BookingController extends Controller
     }
     public function create()
     {
-        $clients = Auth::user()->clients;
-        $cars = Auth::user()->cars;
-        $locations = Auth::user()->locations;
+        $clients = $this->userAuth()->clients;
+        $cars = $this->userAuth()->cars;
+        $locations = $this->userAuth()->locations;
         return view('booking.create', compact('cars', 'clients', 'locations'));
     }
     public function store(Request $request)
@@ -41,7 +41,7 @@ class BookingController extends Controller
         }
         $booking->pickup_location = $request->pickup_location;
         $booking->dropoff_location = $request->dropoff_location;
-        $booking->agence_id = Auth::user()->id;
+        $booking->agence_id = $this->userAuth()->id;
         $booking->pickup_date = $request->pickup_date;
         $booking->dropoff_date = $request->dropoff_date;
         $immatriculation = $booking->car->immatriculation1 ? $booking->car->immatriculation1 . "/" . $booking->car->lettre . "/" . $booking->car->immatriculation2 : $booking->car->immatriculationWW;
@@ -75,8 +75,8 @@ class BookingController extends Controller
         $booking->financial_status = 'non payé';
         $taskclose = new Task();
         $taskclose->title = "Booking ID: {$booking->id} Checkout";
-        $taskclose->agence_id = Auth::user()->id;
-        $taskopen->agence_id = Auth::user()->id;
+        $taskclose->agence_id = $this->userAuth()->id;
+        $taskopen->agence_id = $this->userAuth()->id;
         $taskclose->user_id = $booking->id;
         $taskclose->description = "Car {$immatriculation} will be available in Booking {$booking->id}";
         $taskclose->date = $booking->dropoff_date;
@@ -148,7 +148,7 @@ class BookingController extends Controller
                 $charge = new Charge();
                 $charge->type = $request->type;
                 $charge->description = $id;
-                $charge->agence_id = Auth::user()->id;
+                $charge->agence_id = $this->userAuth()->id;
                 $charge->amount = $request->cout;
                 $charge->date = $request->date;
                 $charge->save();

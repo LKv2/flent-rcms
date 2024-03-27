@@ -17,7 +17,7 @@ class CreateTasksTable extends Migration
             $table->date('date');
             $table->string('type');
             $table->unsignedBigInteger('agence_id')->nullable();
-            $table->foreign('agence_id')->references('id')->on('users');
+            $table->foreign('agence_id')->references('id')->on('agencies');
             $table->timestamps();
         });
     }

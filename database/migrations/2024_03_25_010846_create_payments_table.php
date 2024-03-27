@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2); // Montant du paiement, assuming it's a decimal type
             $table->timestamps();
             $table->unsignedBigInteger('agence_id')->nullable();
-            $table->foreign('agence_id')->references('id')->on('users');
+            $table->foreign('agence_id')->references('id')->on('agencies');
             $table->foreign('booking_id')->references('id')->on('bookings')->onDelete('cascade');
 
         });

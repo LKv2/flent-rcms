@@ -16,7 +16,7 @@ class TaskController extends Controller
     // app/Http/Controllers/TaskController.php
     public function index()
     {
-        $tasks = Auth::user()->tasks;
+        $tasks = $this->userAuth()->tasks;
 
         return view('task.index', compact('tasks'));
     }
@@ -31,7 +31,7 @@ class TaskController extends Controller
                 'type' => 'Simple Task',
                 'date' => $request->date,
                 'description' => $request->description,
-                'agence_id' => Auth::user()->id,
+                'agence_id' => $this->userAuth()->id,
                 'status' => 'To-Do',
             ]
         );
@@ -151,7 +151,7 @@ class TaskController extends Controller
     }
     public function getTasksByDate($date)
     {
-        $tasks = Auth::user()->tasks()->where('date', $date)->get();
+        $tasks = $this->userAuth()->tasks()->where('date', $date)->get();
 
         return response()->json(['tasks' => $tasks]);
     }

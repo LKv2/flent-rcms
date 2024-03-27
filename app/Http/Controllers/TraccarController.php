@@ -23,7 +23,7 @@ class TraccarController extends Controller
 
     public function index()
     {
-        $cars = Auth::user()->cars;
+        $cars = $this->userAuth()->cars;
         return view('gps.index', compact('cars'));
     }
     public function getHistoricalRoute($deviceId)

@@ -35,7 +35,7 @@ return new class extends Migration
             $table->foreign('client_id')->references('id')->on('clients');
             $table->foreign('client2_id')->references('id')->on('clients');
             $table->unsignedBigInteger('agence_id')->nullable();
-            $table->foreign('agence_id')->references('id')->on('users');
+            $table->foreign('agence_id')->references('id')->on('agencies');
             $table->foreign('car_id')->references('id')->on('cars');
         });
     }

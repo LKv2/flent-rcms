@@ -14,7 +14,7 @@ return new class extends Migration
             $table->decimal('amount', 8, 2); // Assuming you want to store an amount as a decimal
             $table->timestamps();
             $table->unsignedBigInteger('agence_id')->nullable();
-            $table->foreign('agence_id')->references('id')->on('users');
+            $table->foreign('agence_id')->references('id')->on('agencies');
             $table->unsignedBigInteger('office_id')->nullable();
             $table->foreign('office_id')->references('id')->on('offices');
         });

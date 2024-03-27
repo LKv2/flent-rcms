@@ -55,7 +55,7 @@ return new class extends Migration
             $table->integer('duree_achat')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('agence_id')->nullable();
-            $table->foreign('agence_id')->references('id')->on('users');
+            $table->foreign('agence_id')->references('id')->on('agencies');
             $table->foreign('model')->references('id')->on('modes')->onDelete('cascade');
             $table->foreign('categorie')->references('id')->on('categories')->onDelete('cascade');
         });

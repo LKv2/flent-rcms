@@ -38,7 +38,7 @@ class ClientController extends Controller
         $client = Client::create([
             'fname' => $request->fname,
             'lname' => $request->lname,
-            'agence_id' => Auth::user()->id,
+            'agence_id' => $this->userAuth()->id,
             'phone' => $request->phone,
             'adresse' => $request->adresse,
             'cin' => $request->cin,

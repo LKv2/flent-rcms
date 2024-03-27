@@ -2,21 +2,90 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\payementMethod;
+use App\Models\Client;
+use App\Models\Location;
+use Illuminate\Http\Request;
+use App\Models\Payment;
+use App\Charts\PaymentMethodChart;
+use App\Models\Agencie;
 use App\Models\Car;
 use App\Models\Charge;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\Framework\Constraint\Count;
 
-class ChargeController extends Controller
+class AdminController extends Controller
 {
     public function index()
     {
-        $charges = $this->userAuth()->charges;
-        $cars = $this->userAuth()->cars;
+        $chiffreAffaire=Agencie::where('user', Auth::user()->id)->first()->Totalbookings();
+        $Charge=Agencie::where('user', Auth::user()->id)->first()->Totalcharges();
+        $Profite=Agencie::where('user', Auth::user()->id)->first()->TotalProfite();
+        $payements=Agencie::where('user', Auth::user()->id)->first()->Totalpayements();
+        $unpayed=Agencie::where('user', Auth::user()->id)->first()->Totalunpayed();
+        
+        $nbClient = Count(Agencie::where('user', Auth::user()->id)->first()->clients);
+        $nbCarsParc=Count(Car::where('etat','en parc')->where('agence_id',Agencie::where('user', Auth::user()->id)->first()->id)->get());
+        $nbCarsOut=Count(Car::where('etat','sortie')->where('agence_id',Agencie::where('user', Auth::user()->id)->first()->id)->get());
+        $nbCarsReparation=Count(Car::where('etat','panne')->where('agence_id',Agencie::where('user', Auth::user()->id)->first()->id)->get());
+        $bookings=Agencie::where('user', Auth::user()->id)->first()->bookings;
+        $nbTasks=Count(Agencie::where('user', Auth::user()->id)->first()->tasks);
+        
+        $nbBookings = Count($bookings);
+        $nbCars = Count(Agencie::where('user', Auth::user()->id)->first()->cars);
 
-        return view('charge.index', compact('charges', 'cars'));
+        // Add any logic to retrieve data for the admin dashboard
+        return view('admin.dashboard',compact('nbClient','chiffreAffaire','nbBookings','nbCars','nbTasks','nbCarsParc','nbCarsOut','nbCarsReparation','Charge','Profite','payements','unpayed'));
     }
-    public function store(Request $request)
+    public function indexCleint()
+    {
+        $clients = Agencie::where('user', Auth::user()->id)->first()->clients;
+
+
+        // Add any logic to retrieve data for the admin dashboard
+        return view('admin.clients.index', compact('clients'));
+    }
+    public function indexCharge()
+    {
+        $charges = Agencie::where('user', Auth::user()->id)->first()->charges;
+        $cars = Agencie::where('user', Auth::user()->id)->first()->cars;
+
+        return view('admin.charges.index', compact('charges', 'cars'));
+    }
+    public function indexGps()
+    {
+
+
+        // Add any logic to retrieve data for the admin dashboard
+        return view('admin.gps.index');
+    }
+    public function indexPayement()
+    {
+        $payements = Agencie::where('user', Auth::user()->id)->first()->payements;
+        $online = Agencie::where('user', Auth::user()->id)->first()->online;
+        $withdraws=Agencie::where('user', Auth::user()->id)->first()->withdraws;
+        $totalAmount = Payment::totalAmount();
+        $totalAmountByMethod = Payment::totalAmountByMethod();
+        return view('admin.payement.index', compact('payements', 'totalAmountByMethod', 'totalAmount', 'online','withdraws'));
+    }
+    public function indexWeb()
+    {
+        $locations = Location::all();
+        // Add any logic to retrieve data for the admin dashboard
+        return view('admin.web', compact('locations'));
+    }
+    public function updateOnlineStatus(Request $request)
+    {
+
+        // Retrieve the boolean value from the request
+        $status = $request->status === "on";
+        $agence = Agencie::where('user', Auth::user()->id)->first();
+        $agence->online = $status;
+        $agence->save();
+        return redirect()->route('payment')->with('success', 'Payment recorded successfully.');
+    }
+    public function storeCharge(Request $request)
     {
         $charge = new Charge();
         $charge->type = $request->type;
@@ -32,7 +101,7 @@ class ChargeController extends Controller
                 break;
         }
         // Create a new Charge instance
-        $charge->agence_id = $this->userAuth()->id;
+        $charge->agence_id = Agencie::where('user', Auth::user()->id)->first()->id;
         $charge->amount = $request->cout;
         $charge->date = $request->date;
 
@@ -40,7 +109,7 @@ class ChargeController extends Controller
         $charge->save();
         if ($request->type !== 'Reparation' && $request->type !== 'Office') {
             // Update the Car model based on the charge type
-            $this->update($request, $charge);
+            $this->updateCarCharge($request, $charge);
         }
 
 
@@ -48,7 +117,7 @@ class ChargeController extends Controller
         return redirect()->route('charge')->with('success', 'Charge added successfully.');
     }
 
-    public function update(Request $request, Charge $charge)
+    public function updateCarCharge(Request $request, Charge $charge)
     {
         $carId = $request->car;
 
@@ -107,7 +176,7 @@ class ChargeController extends Controller
         // Save the changes to the Car model
         $car->save();
     }
-    
+
     public function uploadFileCharge($file, Car $car, $field)
     {
         // Example: store the file in the 'uploads' disk

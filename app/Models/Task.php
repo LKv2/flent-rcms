@@ -23,7 +23,7 @@ class Task extends Model
     // For example, a task belongs to a user
     public function agencie()
     {
-        return $this->belongsTo(User::class, 'agence_id');
+        return $this->belongsTo(Agencie::class, 'agence_id');
     }
     public function user()
     {

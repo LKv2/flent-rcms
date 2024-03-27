@@ -22,7 +22,7 @@ class ProlongationController extends Controller
             'booking_id' => $booking->id,
             'old_dropoff_date' => $booking->dropoff_date,
             'new_dropoff_date' => $request->new_dropoff_date,
-            'agence_id' => Auth::user()->id,
+            'agence_id' => $this->userAuth()->id,
             'new_price' => $request->new_price,
         ]);
         $booking->dropoff_date = $request->new_dropoff_date;

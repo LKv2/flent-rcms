@@ -15,7 +15,7 @@ return new class extends Migration
             $table->dateTime('new_dropoff_date');
             $table->decimal('new_price', 8, 2);
             $table->unsignedBigInteger('agence_id')->nullable();
-            $table->foreign('agence_id')->references('id')->on('users');
+            $table->foreign('agence_id')->references('id')->on('agencies');
             $table->timestamps();
 
             $table->foreign('booking_id')->references('id')->on('bookings');

@@ -32,7 +32,7 @@ class PaymentController extends Controller
         $payment = new Payment();
         $payment->booking_id = $bookingId;
         $payment->methode = $request->methode;
-        $payment->agence_id = Auth::user()->id;
+        $payment->agence_id = $this->userAuth()->id;
 
         $payment->amount = $request->price;
         $subject = 'Payment Receipt';

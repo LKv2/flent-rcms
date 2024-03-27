@@ -19,7 +19,7 @@ class CreateOfficesTable extends Migration
             $table->unsignedBigInteger('user')->unique()->nullable();
             $table->timestamps();
             $table->foreign('user')->references('id')->on('users');
-            $table->foreign('agence_id')->references('id')->on('users');
+            $table->foreign('agence_id')->references('id')->on('agencies');
         });
     }
 

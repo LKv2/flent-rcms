@@ -46,28 +46,5 @@ class User extends Authenticatable
         'activation' => 'boolean',
 
     ];
-    public function offices()
-    {
-        return $this->hasMany(Office::class,'agence_id');
-    }
-    public function locations()
-    {
-        return $this->hasMany(Location::class,'agence_id');
-    }
-    public function clients()
-    {
-        return $this->hasMany(Client::class,'agence_id');
-    }
-    public function cars()
-    {
-        return $this->hasMany(Car::class,'agence_id');
-    }
-    public function charges()
-    {
-        return $this->hasMany(Charge::class,'agence_id');
-    }
-    public function tasks()
-    {
-        return $this->hasMany(Task::class,'agence_id');
-    }
+    
 }

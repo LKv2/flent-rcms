@@ -11,7 +11,7 @@ class Charge extends Model
     protected $fillable = ['type','description', 'amount', 'date','agence_id','car'];
     public function agencie()
     {
-        return $this->belongsTo(User::class, 'agence_id');
+        return $this->belongsTo(Agencie::class, 'agence_id');
     }
     public function car()
     {

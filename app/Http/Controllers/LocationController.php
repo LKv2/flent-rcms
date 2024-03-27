@@ -11,8 +11,8 @@ class LocationController extends Controller
 {
     public function index()
     {
-        $locations = Auth::user()->locations;
-        $offices = Auth::user()->offices;
+        $locations = $this->userAuth()->locations;
+        $offices = $this->userAuth()->offices;
 
         return view('location.index', compact('locations', 'offices'));
     }
@@ -21,7 +21,7 @@ class LocationController extends Controller
 
         if ($request->isOffice == "on") {
             $Office = Office::create([
-                'agence_id' => Auth::user()->id,
+                'agence_id' => $this->userAuth()->id,
                 'city' => $request->city,
                 'fixe' => $request->fixe,
                 'phone' => $request->phone,
@@ -30,14 +30,14 @@ class LocationController extends Controller
             ]);
             $location = Location::create([
                 'name' => 'Office ' . $request->city,
-                'agence_id' => Auth::user()->id,
+                'agence_id' => $this->userAuth()->id,
                 'amount' => 0,
                 'office_id' => $Office->id
             ]);
         } else {
             Location::create([
                 'name' => $request->name,
-                'agence_id' => Auth::user()->id,
+                'agence_id' => $this->userAuth()->id,
                 'amount' => $request->amount,
             ]);
         }
@@ -73,7 +73,7 @@ class LocationController extends Controller
         $location = Location::findOrFail($id);
 
         // Check if the authenticated user owns the location before deleting
-        if ($location->agence_id !== Auth::user()->id) {
+        if ($location->agence_id !== $this->userAuth()->id) {
             return redirect()->route('locations.index')->with('error', 'Unauthorized to delete this location.');
         }
 

@@ -64,7 +64,7 @@ class Car extends Model
     }
     public function agencie()
     {
-        return $this->belongsTo(User::class, 'agence_id');
+        return $this->belongsTo(Agencie::class, 'agence_id');
     }
     function traite()
     {
