@@ -14,6 +14,7 @@ use App\chargels\Prolongation;
 use App\Http\Controllers\ModeController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TraccarController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -136,6 +137,12 @@ Route::match(['POST', 'GET'], '/update-task-status/{id}', [TaskController::class
 Route::get('process-transaction/{id}', [PayPalController::class, 'process'])->name('Transaction.process');
 Route::get('success-transaction/{id}/', [PayPalController::class, 'success'])->name('Transaction.success');
 Route::get('cancel-transaction/{id}/', [PayPalController::class, 'cancel'])->name('Transaction.cancel');
+
+Route::get('/gps', [TraccarController::class, 'index'])->name('gps.index');
+Route::post('/gps', [TraccarController::class, 'storeDevice'])->name('gps.store');
+Route::get('/traccar/devices', [TraccarController::class, 'getDevices']);
+Route::get('/traccar/device/{deviceId}/positions', [TraccarController::class, 'getDevicePositions']);
+Route::get('/traccar/device/{deviceId}/historical-route', [TraccarController::class, 'getHistoricalRoute']);
 
 
 require __DIR__ . '/auth.php';

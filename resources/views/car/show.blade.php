@@ -3,11 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
 
             {{ $car->marque()->name }} {{ $car->mode->name }} {{ $car->mode->year }}
-            @if ($car->immatriculation1)
-                {{ strval($car->immatriculation1) }} | {{ $car->lettre }} | {{ strval($car->immatriculation2) }}
-            @else
-                {{ $car->immatriculationWW }}
-            @endif
+            {{$car->immatriculation()}}
         </h2>
 
     </x-slot>

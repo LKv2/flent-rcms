@@ -47,11 +47,7 @@
                             <tr class="border-b dark:border-gray-700">
                                 <td scope="row"
                                     class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    @if ($car->immatriculation1)
-                                        {{ strval($car->immatriculation1) . '|' . $car->lettre . '|' . strval($car->immatriculation2) }}
-                                    @else
-                                        {{ $car->immatriculationWW }}
-                                    @endif
+                                    {{ $car->immatriculation() }}
                                 </td>
                                 <td class="px-4 py-3">{{ $car->mode->name }}</td>
                                 <td class="px-4 py-3">{{ $car->etat }}</td>

@@ -131,4 +131,12 @@ class Car extends Model
 
         return true; // Car is available for the requested period
     }
+    public function immatriculation()
+    {
+        if ($this->immatriculation1) {
+            return strval($this->immatriculation1)  . '|' .  $this->lettre  . '|' . strval($this->immatriculation2);
+        } else {
+            return $this->immatriculationWW;
+        }
+    }
 }
