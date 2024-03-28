@@ -18,10 +18,12 @@ return new class extends Migration
             $table->string('fname');
             $table->string('lname');
             $table->string('phone');
-            $table->integer('groupId');
+            $table->integer('groupId')->nullable();
             $table->string('adresse');
             $table->boolean('online')->default(true);
             $table->string('date_naissance')->nullable();
+            $table->date('CDelivre_date')->nullable();
+            $table->date('CValide_date')->nullable();
             $table->string('file_input_C')->nullable();
             $table->string('cin')->unique();
             $table->unsignedBigInteger('user')->unique()->nullable();

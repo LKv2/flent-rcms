@@ -7,6 +7,7 @@ use App\Http\Controllers\bookingController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\locationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\chargeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProlongationController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\ModeController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TraccarController;
+use App\Models\Agencie;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -37,16 +39,19 @@ Route::middleware(['auth', 'verified', 'activation'])->group(function () {
     Route::get('/dashboard', function () {
         switch (Auth::user()->role) {
             case 'admin':
-                return view('admin.dashboard');
-            case 'booking':
-                return view('booking.dashboard');
+                $controller = new AdminController();
+                $controller->dashboard();
+                break;
+            case 'client':
+                
+                return view('client.dashboard');
             case 'commercial':
                 return view('commercial.dashboard');
         }
     })->name('dashboard');
     Route::middleware('role:admin')->group(function () {
     });
-    Route::middleware('role:booking')->group(function () {
+    Route::middleware('role:client')->group(function () {
     });
     Route::middleware('role:commercial')->group(function () {
     });
@@ -58,14 +63,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-
 Route::get('/categories', [CategorieController::class, 'index'])->name('categories.index');
 Route::get('/categories/create', [CategorieController::class, 'create'])->name('categories.create');
 Route::post('/categories', [CategorieController::class, 'store'])->name('categories.store');
 Route::get('/categories/{categorie}/edit', [CategorieController::class, 'edit'])->name('categories.edit');
 Route::post('/categories/{categorie}', [CategorieController::class, 'update'])->name('categories.update');
 Route::get('/categories/{categorie}', [CategorieController::class, 'destroy'])->name('categories.destroy');
+
+Route::get('/agencies', [AdminController::class, 'index'])->name('agencies.index');
+Route::get('/agencies/create', [AdminController::class, 'create'])->name('agencies.create');
+Route::post('/agencies', [AdminController::class, 'store'])->name('agencies.store');
+Route::get('/agencies/{agencie}/edit', [AdminController::class, 'edit'])->name('agencies.edit');
+Route::get('/agencies/{agencie}', [AdminController::class, 'show'])->name('agencies.show');
+Route::get('/agencies/{agencie}/diseable', [AdminController::class, 'diseable'])->name('agencies.diseable');
+Route::post('/agencies/{agencie}', [AdminController::class, 'update'])->name('agencies.update');
+Route::get('/agencies/{agencie}/delete', [AdminController::class, 'destroy'])->name('agencies.destroy');
 
 Route::get('/marques', [MarqueController::class, 'index'])->name('marques.index');
 Route::get('/marques/create', [MarqueController::class, 'create'])->name('marques.create');

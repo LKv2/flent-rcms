@@ -22,7 +22,9 @@ class Agencie extends Model
         'adresse',
         'groupId',
         'online',
-        'user'
+        'user',
+        'CValide_date',
+        'CDelivre_date',
     ];
     public function cars()
     {

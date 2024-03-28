@@ -150,7 +150,7 @@ class TraccarController extends Controller
 
     public function storeDevice(Request $request)
     {
-        
+
         $car = Car::find($request->car);
         // Prepare the data to be sent to Traccar API for device creation
         $data = [
@@ -199,6 +199,58 @@ class TraccarController extends Controller
             return response()->json(['message' => 'User created successfully'], 201);
         } else {
             return response()->json(['error' => 'Failed to create user'], $response->status());
+        }
+    }
+    public function getGroupIdByName($name)
+    {
+        try {
+            // Fetch all groups from Traccar API
+            $response = Http::withBasicAuth($this->traccarUsername, $this->traccarPassword)
+                ->get("{$this->traccarUrl}/api/groups");
+
+            // Check if the request was successful (HTTP status code 2xx)
+            if ($response->successful()) {
+                $groups = $response->json();
+
+                // Search for the group with the provided name
+                foreach ($groups as $group) {
+                    if ($group['name'] === $name) {
+                        // Return the ID of the matching group
+                        return response()->json(['group_id' => $group['id']]);
+                    }
+                }
+
+                // If no group with the provided name is found, return an error
+                return response()->json(['error' => 'Group not found'], 404);
+            } else {
+                // Handle the case where the request was not successful
+                $errorMessage = $response->json();
+                return response()->json(['error' => $errorMessage], $response->status());
+            }
+        } catch (\Exception $e) {
+            // Handle exceptions (e.g., connection error, authentication failure)
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function destroyGroup($groupId)
+    {
+        try {
+            // Send a DELETE request to Traccar API to delete the group
+            $response = Http::withBasicAuth($this->traccarUsername, $this->traccarPassword)
+                ->delete("{$this->traccarUrl}/api/groups/{$groupId}");
+
+            // Check if the request was successful (HTTP status code 2xx)
+            if ($response->successful()) {
+                // Group deleted successfully
+                return response()->json(['message' => 'Group deleted successfully'], 200);
+            } else {
+                // Failed to delete the group
+                $errorMessage = $response->json();
+                return response()->json(['error' => $errorMessage], $response->status());
+            }
+        } catch (\Exception $e) {
+            // Handle exceptions (e.g., connection error, authentication failure)
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }
